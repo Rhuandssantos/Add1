@@ -1,7 +1,27 @@
+<style>
+    /* Definindo a animação fade-out */
+    .fade-out {
+        opacity: 0;
+        transition: opacity 1s ease-out; /* Controla a duração e o efeito de transição */
+    }
+
+    /* Estado padrão (imagem visível) */
+    .fade-in {
+        opacity: 1;
+        transition: opacity 1s ease-in; /* Controla a duração e o efeito de transição */
+    }
+
+    /* Estilo para ocupar largura total */
+    img[name='slide'] {
+        width: 100%;
+        height: auto; /* Ajusta automaticamente a altura */
+    }
+</style>
+
 <script>
     var i = 0; 			// Start Point
     var images = [];	// Images Array com validação
-    var time = 3000;	// Time Between Switch
+    var time = 3000;	// Tempo entre trocas de imagens
     var reloadTime = 60000; // Tempo para recarregar a página (em milissegundos)
     var imagePaths = [
         'image1.png', 'image2.png', 'image3.png', 
@@ -29,34 +49,38 @@
     function changeImg() {
         if (images.length === 0) return; // Se não houver imagens válidas, sair da função
 
-        // Obter o elemento da imagem e adicionar classe de fade-out
+        // Obter o elemento da imagem
         var imgElement = document.querySelector("img[name='slide']");
-        imgElement.classList.remove("fade-in"); // Remover a classe fade-in
-        imgElement.classList.add("fade-out"); // Adicionar a classe fade-out
+        
+        // Adicionar classe de fade-out para iniciar a transição
+        imgElement.classList.remove("fade-in"); 
+        imgElement.classList.add("fade-out");
 
-        // Esperar o efeito fade-out antes de trocar a imagem
+        // Esperar o fade-out para trocar a imagem
         setTimeout(() => {
             imgElement.src = images[i]; // Trocar a imagem
-            imgElement.classList.remove("fade-out"); // Remover a classe fade-out
-            imgElement.classList.add("fade-in"); // Adicionar a classe fade-in
 
-            // Check If Index Is Under Max
+            // Adicionar classe fade-in após a troca
+            imgElement.classList.remove("fade-out");
+            imgElement.classList.add("fade-in");
+
+            // Incrementar índice ou resetar se no final da lista
             if (i < images.length - 1) {
                 i++;
             } else {
-                i = 0; // Reset Back To 0
+                i = 0;
             }
 
-            // Configurar a próxima troca de imagem
+            // Configurar próxima troca de imagem
             setTimeout(changeImg, time);
-        }, 1000); // Duração do efeito fade-out em ms (ajuste conforme necessário)
+        }, 1000); // Duração do efeito fade-out (ajustável)
     }
 
-    // Recarregar a página após um período definido
+    // Recarregar a página após o tempo definido
     function setupAutoReload() {
         setTimeout(() => {
             location.reload();
-        }, reloadTime); // Recarregar após o tempo definido em reloadTime
+        }, reloadTime); // Recarregar após o tempo em reloadTime
     }
 
     // Executar quando a página carregar
