@@ -1,35 +1,15 @@
-<style>
-    /* Ajustar as imagens para a largura total da página */
-    img[name="slide"] {
-        width: 100%;
-        height: auto; /* Mantém a proporção da imagem */
-        display: block; /* Remove espaçamento extra ao redor */
-    }
-
-    /* Definindo a animação fade-out */
-    .fade-out {
-        opacity: 0;
-        transition: opacity 1s ease-out; /* Controla a duração e o efeito de transição */
-    }
-
-    /* Estado padrão (imagem visível) */
-    .fade-in {
-        opacity: 1;
-        transition: opacity 1s ease-in; /* Controla a duração e o efeito de transição */
-    }
-</style>
-
 <script>
     var i = 0; 			// Start Point
     var images = [];	// Images Array com validação
     var time = 3000;	// Time Between Switch
+    var reloadTime = 60000; // Tempo para recarregar a página (em milissegundos)
     var imagePaths = [
         'image1.png', 'image2.png', 'image3.png', 
         'image4.png', 'image5.png', 'image6.png', 
         'image7.png', 'image8.png', 'image9.png'
     ];
 
-    // Check if images exist and filter
+    // Carregar imagens disponíveis
     function preloadImages() {
         let promises = imagePaths.map((path) => {
             return new Promise((resolve, reject) => {
@@ -41,13 +21,12 @@
         });
 
         return Promise.all(promises).then((results) => {
-            // Filtrar os caminhos que não são null (imagens existentes)
-            images = results.filter((path) => path !== null);
+            images = results.filter((path) => path !== null); // Filtrar apenas imagens disponíveis
         });
     }
 
-    // Change Image with fade-out effect
-    function changeImg(){
+    // Trocar imagem com efeito fade-out
+    function changeImg() {
         if (images.length === 0) return; // Se não houver imagens válidas, sair da função
 
         // Obter o elemento da imagem e adicionar classe de fade-out
@@ -62,9 +41,9 @@
             imgElement.classList.add("fade-in"); // Adicionar a classe fade-in
 
             // Check If Index Is Under Max
-            if(i < images.length - 1){
-                i++; 
-            } else { 
+            if (i < images.length - 1) {
+                i++;
+            } else {
                 i = 0; // Reset Back To 0
             }
 
@@ -73,8 +52,15 @@
         }, 1000); // Duração do efeito fade-out em ms (ajuste conforme necessário)
     }
 
-    // Run function when page loads
-    window.onload = function() {
+    // Recarregar a página após um período definido
+    function setupAutoReload() {
+        setTimeout(() => {
+            location.reload();
+        }, reloadTime); // Recarregar após o tempo definido em reloadTime
+    }
+
+    // Executar quando a página carregar
+    window.onload = function () {
         preloadImages().then(() => {
             if (images.length > 0) {
                 changeImg();
@@ -82,10 +68,7 @@
                 console.error("Nenhuma imagem encontrada na pasta.");
             }
 
-            // Refresh page every 1 minute (60000 ms)
-            setInterval(function(){
-                location.reload();
-            }, 3600000);
+            setupAutoReload(); // Configurar o recarregamento automático
         });
     };
 </script>
